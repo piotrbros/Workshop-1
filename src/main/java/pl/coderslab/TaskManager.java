@@ -12,8 +12,6 @@ public class TaskManager {
     public static void main(String[] args) {
         String[] options = {"add", "remove", "list", "exit"};
         Scanner scanner = new Scanner(System.in);
-
-
         String[][] tasks = openTasks();
 
         while (true) {
@@ -24,10 +22,8 @@ public class TaskManager {
                 case "exit":
                     exitProgram();
                     return;
-                case "print":
-                    for (String[] row : tasks) {
-                        System.out.println(Arrays.toString(row));
-                    }
+                case "list":
+                    listTasks(tasks);
                     break;
                 // other options
                 default:
@@ -40,6 +36,22 @@ public class TaskManager {
 
 
 
+    }
+
+    public static void listTasks(String[][] tasks) {
+        System.out.println("list");
+        StringBuilder buffer = new StringBuilder();
+
+        for (int i = 0; i < tasks.length; i++) {
+            buffer.append(i);
+            buffer.append(" : ");
+            for (String column : tasks[i]) {
+                buffer.append(column);
+                buffer.append(" ");
+            }
+            buffer.append("\n");
+        }
+        System.out.println(buffer);
     }
 
     public static void exitProgram() {

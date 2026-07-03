@@ -3,10 +3,10 @@ package pl.coderslab;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -18,7 +18,7 @@ public class TaskManager {
         Scanner scanner = new Scanner(System.in);
         String[][] tasks;
         try {
-            tasks = openTasks(PATH);
+            tasks = readTasks(PATH);
         } catch (IOException e) {
             System.out.println("Cannot open " + PATH.getFileName());
             return;
@@ -30,7 +30,7 @@ public class TaskManager {
 
             switch (userInput) {
                 case "exit":
-                    exitProgram();
+                    exitProgram(PATH, tasks);
                     return;
                 case "list":
                     listTasks(tasks);
@@ -47,6 +47,24 @@ public class TaskManager {
         }
 
 
+    }
+
+    public static void writeToFile(Path path, List<String> data) {
+        try {
+            Files.write(path, data);
+        } catch (IOException e) {
+            System.out.println("Cannot write to file. Error: " + e);
+        }
+    }
+
+
+    public static List<String> createListToWrite(String[][] tasks) {
+        List<String> rows = new ArrayList<>();
+
+        for (String[] row : tasks) {
+            rows.add(String.join(",", row));
+        }
+        return rows;
     }
 
     public static String[][] removeTask(String[][] tasks) {
@@ -153,9 +171,10 @@ public class TaskManager {
         System.out.println(buffer);
     }
 
-    public static void exitProgram() {
+    public static void exitProgram(Path path, String[][] tasks) {
         //Save file method below TO ADD
         System.out.println("exit");
+        writeToFile(path, createListToWrite(tasks));
         System.out.println(ConsoleColors.RED + "Bye, bye.");
         return;
     }
@@ -169,7 +188,7 @@ public class TaskManager {
         }
     }
 
-    public static String[][] openTasks(Path path) throws IOException {
+    public static String[][] readTasks(Path path) throws IOException {
         String[][] data;
 
         // Opening the tasks.csv file
